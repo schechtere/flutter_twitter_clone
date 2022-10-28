@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 class NewMessagePage extends StatefulWidget {
   const NewMessagePage({Key? key, this.scaffoldKey}) : super(key: key);
 
-  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState>? scaffoldKey;
 
   @override
   State<StatefulWidget> createState() => _NewMessagePageState();

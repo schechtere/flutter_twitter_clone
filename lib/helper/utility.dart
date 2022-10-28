@@ -198,7 +198,9 @@ class Utility {
   }
 
   static bool validateCredentials(
-      GlobalKey<ScaffoldState> _scaffoldKey, String? email, String? password) {
+      GlobalKey<ScaffoldMessengerState> _scaffoldKey,
+      String? email,
+      String? password) {
     if (email == null || email.isEmpty) {
       customSnackBar(_scaffoldKey, 'Please enter email id');
       return false;
@@ -218,7 +220,8 @@ class Utility {
     return true;
   }
 
-  static customSnackBar(GlobalKey<ScaffoldState>? _scaffoldKey, String msg,
+  static customSnackBar(
+      GlobalKey<ScaffoldMessengerState>? _scaffoldKey, String msg,
       {double height = 30, Color backgroundColor = Colors.black}) {
     if (_scaffoldKey == null || _scaffoldKey.currentState == null) {
       return;
@@ -281,7 +284,7 @@ class Utility {
   }
 
   static void copyToClipBoard({
-    required GlobalKey<ScaffoldState> scaffoldKey,
+    required GlobalKey<ScaffoldMessengerState> scaffoldKey,
     required String text,
     required String message,
   }) {

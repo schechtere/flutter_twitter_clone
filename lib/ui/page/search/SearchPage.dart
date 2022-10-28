@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key, this.scaffoldKey}) : super(key: key);
 
-  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState>? scaffoldKey;
 
   @override
   State<StatefulWidget> createState() => _SearchPageState();

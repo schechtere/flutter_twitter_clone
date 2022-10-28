@@ -34,7 +34,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey<ScaffoldState>();
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   int pageIndex = 0;
   // ignore: cancel_subscriptions
@@ -192,6 +194,7 @@ class _HomePageState extends State<HomePage> {
       case 0:
         return FeedPage(
           scaffoldKey: _scaffoldKey,
+          scaffoldStateKey: _scaffoldStateKey,
           refreshIndicatorKey: refreshIndicatorKey,
         );
       case 1:
@@ -201,7 +204,8 @@ class _HomePageState extends State<HomePage> {
       case 3:
         return ChatListPage(scaffoldKey: _scaffoldKey);
       default:
-        return FeedPage(scaffoldKey: _scaffoldKey);
+        return FeedPage(
+            scaffoldKey: _scaffoldKey, scaffoldStateKey: _scaffoldStateKey);
     }
   }
 

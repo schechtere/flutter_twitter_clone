@@ -16,7 +16,7 @@ class TweetBottomSheet {
   Widget tweetOptionIcon(BuildContext context,
       {required FeedModel model,
       required TweetType type,
-      required GlobalKey<ScaffoldState> scaffoldKey}) {
+      required GlobalKey<ScaffoldMessengerState> scaffoldKey}) {
     return Container(
       width: 25,
       height: 25,
@@ -39,7 +39,7 @@ class TweetBottomSheet {
   void _openbottomSheet(BuildContext context,
       {required TweetType type,
       required FeedModel model,
-      required GlobalKey<ScaffoldState> scaffoldKey}) async {
+      required GlobalKey<ScaffoldMessengerState> scaffoldKey}) async {
     var authState = Provider.of<AuthState>(context, listen: false);
     bool isMyTweet = authState.userId == model.userId;
     await showModalBottomSheet(
@@ -79,7 +79,7 @@ class TweetBottomSheet {
       {required bool isMyTweet,
       required FeedModel model,
       required TweetType type,
-      required GlobalKey<ScaffoldState> scaffoldKey}) {
+      required GlobalKey<ScaffoldMessengerState> scaffoldKey}) {
     return Column(
       children: <Widget>[
         Container(
@@ -124,8 +124,10 @@ class TweetBottomSheet {
                       content: const Text('Do you want to delete this Tweet?'),
                       actions: [
                         // ignore: deprecated_member_use
-                        FlatButton(
-                          textColor: Colors.black,
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.black,
+                          ),
                           onPressed: () {
                             Navigator.pop(context);
                             Navigator.pop(context);
@@ -210,7 +212,7 @@ class TweetBottomSheet {
       {required bool isMyTweet,
       required FeedModel model,
       required TweetType type,
-      required GlobalKey<ScaffoldState> scaffoldKey}) {
+      required GlobalKey<ScaffoldMessengerState> scaffoldKey}) {
     return Column(
       children: <Widget>[
         Container(
@@ -255,8 +257,10 @@ class TweetBottomSheet {
                       content: const Text('Do you want to delete this Tweet?'),
                       actions: [
                         // ignore: deprecated_member_use
-                        FlatButton(
-                          textColor: Colors.black,
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            foregroundColor: Colors.black,
+                          ),
                           onPressed: () {
                             Navigator.pop(context);
                             Navigator.pop(context);
@@ -391,7 +395,7 @@ class TweetBottomSheet {
   void openRetweetbottomSheet(BuildContext context,
       {TweetType? type,
       required FeedModel model,
-      required GlobalKey<ScaffoldState> scaffoldKey}) async {
+      required GlobalKey<ScaffoldMessengerState> scaffoldKey}) async {
     await showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
@@ -569,11 +573,11 @@ class TweetBottomSheet {
                       ? Tweet(
                           model: model,
                           type: type,
-                          scaffoldKey: GlobalKey<ScaffoldState>(),
+                          scaffoldKey: GlobalKey<ScaffoldMessengerState>(),
                         )
                       : Tweet(
                           model: model,
-                          scaffoldKey: GlobalKey<ScaffoldState>()),
+                          scaffoldKey: GlobalKey<ScaffoldMessengerState>()),
                   id: "tweet/${model.key}",
                   socialMetaTagParameters: socialMetaTagParameters),
             );

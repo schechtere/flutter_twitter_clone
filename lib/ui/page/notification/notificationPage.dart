@@ -17,7 +17,7 @@ class NotificationPage extends StatefulWidget {
       : super(key: key);
 
   /// scaffoldKey used to open sidebar drawer
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey;
 
   @override
   _NotificationPageState createState() => _NotificationPageState();

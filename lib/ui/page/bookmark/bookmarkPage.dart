@@ -47,7 +47,7 @@ class BookmarkPageBody extends StatelessWidget {
       child: Tweet(
         model: model,
         type: TweetType.Tweet,
-        scaffoldKey: GlobalKey<ScaffoldState>(),
+        scaffoldKey: GlobalKey<ScaffoldMessengerState>(),
       ),
     );
   }

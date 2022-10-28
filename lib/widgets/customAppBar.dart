@@ -13,6 +13,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.title,
       // this.actions,
       this.scaffoldKey,
+      this.scaffoldStateKey,
       this.icon,
       this.onActionPressed,
       this.textController,
@@ -33,7 +34,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isSubmitDisable;
   // final Widget leading;
   final Function? onActionPressed;
-  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState>? scaffoldKey;
+  final GlobalKey<ScaffoldState>? scaffoldStateKey;
   final String? submitButtonText;
   final TextEditingController? textController;
   final Widget? title;
@@ -115,7 +117,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         path: authState.userModel?.profilePic,
         height: 30,
       ).ripple(() {
-        scaffoldKey!.currentState!.openDrawer();
+        scaffoldStateKey!.currentState!.openDrawer();
       }),
     );
   }

@@ -28,7 +28,8 @@ class FeedPostDetail extends StatefulWidget {
 
 class _FeedPostDetailState extends State<FeedPostDetail> {
   late String postId;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   void initState() {
     postId = widget.postId;

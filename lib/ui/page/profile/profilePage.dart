@@ -51,7 +51,8 @@ class _ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
   bool isMyProfile = false;
   int pageIndex = 0;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {

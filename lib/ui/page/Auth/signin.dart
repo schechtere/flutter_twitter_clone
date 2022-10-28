@@ -20,7 +20,8 @@ class _SignInState extends State<SignIn> {
   late TextEditingController _emailController;
   late TextEditingController _passwordController;
   late CustomLoader loader;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   void initState() {
     _emailController = TextEditingController();

@@ -74,7 +74,7 @@ class AuthState extends AppState {
 
   /// Verify user's credentials for login
   Future<String?> signIn(String email, String password,
-      {required GlobalKey<ScaffoldState> scaffoldKey}) async {
+      {required GlobalKey<ScaffoldMessengerState> scaffoldKey}) async {
     try {
       isBusy = true;
       var result = await _firebaseAuth.signInWithEmailAndPassword(
@@ -173,7 +173,7 @@ class AuthState extends AppState {
 
   /// Create new user's profile in db
   Future<String?> signUp(UserModel userModel,
-      {required GlobalKey<ScaffoldState> scaffoldKey,
+      {required GlobalKey<ScaffoldMessengerState> scaffoldKey,
       required String password}) async {
     try {
       isBusy = true;
@@ -261,7 +261,7 @@ class AuthState extends AppState {
 
   /// Send email verification link to email2
   Future<void> sendEmailVerification(
-      GlobalKey<ScaffoldState> scaffoldKey) async {
+      GlobalKey<ScaffoldMessengerState> scaffoldKey) async {
     User user = _firebaseAuth.currentUser!;
     user.sendEmailVerification().then((_) {
       Utility.logEvent('email_verification_sent',
@@ -289,7 +289,7 @@ class AuthState extends AppState {
 
   /// Send password reset link to email
   Future<void> forgetPassword(String email,
-      {required GlobalKey<ScaffoldState> scaffoldKey}) async {
+      {required GlobalKey<ScaffoldMessengerState> scaffoldKey}) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email).then((value) {
         Utility.customSnackBar(scaffoldKey,

@@ -29,7 +29,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController _bio;
   late TextEditingController _location;
   late TextEditingController _dob;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   String? dob;
   @override
   void initState() {

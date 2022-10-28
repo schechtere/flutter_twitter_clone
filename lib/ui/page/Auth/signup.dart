@@ -28,7 +28,8 @@ class _SignupState extends State<Signup> {
   late TextEditingController _confirmController;
   late CustomLoader loader;
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> _scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   void initState() {
     loader = CustomLoader();

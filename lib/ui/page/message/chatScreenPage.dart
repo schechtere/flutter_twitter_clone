@@ -27,7 +27,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
   late String userImage;
   late ChatState state;
   late ScrollController _controller;
-  late GlobalKey<ScaffoldState> _scaffoldKey;
+  late GlobalKey<ScaffoldMessengerState> _scaffoldKey;
 
   @override
   void dispose() {
@@ -37,7 +37,7 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
 
   @override
   void initState() {
-    _scaffoldKey = GlobalKey<ScaffoldState>();
+    _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
     _controller = ScrollController();
     final chatState = Provider.of<ChatState>(context, listen: false);
     final state = Provider.of<AuthState>(context, listen: false);

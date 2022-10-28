@@ -18,7 +18,7 @@ class TweetIconsRow extends StatelessWidget {
   final double? size;
   final bool isTweetDetail;
   final TweetType? type;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey;
   const TweetIconsRow(
       {Key? key,
       required this.model,

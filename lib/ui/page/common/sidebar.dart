@@ -15,7 +15,7 @@ import 'package:provider/provider.dart';
 class SidebarMenu extends StatefulWidget {
   const SidebarMenu({Key? key, this.scaffoldKey}) : super(key: key);
 
-  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState>? scaffoldKey;
 
   @override
   _SidebarMenuState createState() => _SidebarMenuState();

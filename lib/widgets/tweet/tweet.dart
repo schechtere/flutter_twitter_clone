@@ -23,7 +23,7 @@ class Tweet extends StatelessWidget {
   final Widget? trailing;
   final TweetType type;
   final bool isDisplayOnProfile;
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey;
   const Tweet({
     Key? key,
     required this.model,
@@ -130,7 +130,7 @@ class Tweet extends StatelessWidget {
                   iconColor: Theme.of(context).textTheme.caption!.color!,
                   iconEnableColor: TwitterColor.ceriseRed,
                   size: 20,
-                  scaffoldKey: GlobalKey<ScaffoldState>(),
+                  scaffoldKey: GlobalKey<ScaffoldMessengerState>(),
                 ),
               ),
               type == TweetType.ParentTweet

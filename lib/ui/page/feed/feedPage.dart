@@ -13,10 +13,14 @@ import 'package:provider/provider.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage(
-      {Key? key, required this.scaffoldKey, this.refreshIndicatorKey})
+      {Key? key,
+      required this.scaffoldKey,
+      this.refreshIndicatorKey,
+      required this.scaffoldStateKey})
       : super(key: key);
 
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey;
+  final GlobalKey<ScaffoldState> scaffoldStateKey;
 
   final GlobalKey<RefreshIndicatorState>? refreshIndicatorKey;
 
@@ -53,9 +57,9 @@ class FeedPage extends StatelessWidget {
               return Future.value(true);
             },
             child: _FeedPageBody(
-              refreshIndicatorKey: refreshIndicatorKey,
-              scaffoldKey: scaffoldKey,
-            ),
+                refreshIndicatorKey: refreshIndicatorKey,
+                scaffoldKey: scaffoldKey,
+                scaffoldStateKey: scaffoldStateKey),
           ),
         ),
       ),
@@ -64,12 +68,16 @@ class FeedPage extends StatelessWidget {
 }
 
 class _FeedPageBody extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey;
+  final GlobalKey<ScaffoldState> scaffoldStateKey;
 
   final GlobalKey<RefreshIndicatorState>? refreshIndicatorKey;
 
   const _FeedPageBody(
-      {Key? key, required this.scaffoldKey, this.refreshIndicatorKey})
+      {Key? key,
+      required this.scaffoldKey,
+      this.refreshIndicatorKey,
+      required this.scaffoldStateKey})
       : super(key: key);
 
   @override
@@ -131,7 +139,7 @@ class _FeedPageBody extends StatelessWidget {
             return IconButton(
               icon: const Icon(Icons.menu),
               onPressed: () {
-                scaffoldKey.currentState!.openDrawer();
+                scaffoldStateKey.currentState!.openDrawer();
               },
             );
           },

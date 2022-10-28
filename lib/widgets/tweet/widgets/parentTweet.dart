@@ -38,7 +38,7 @@ class ParentTweetWidget extends StatelessWidget {
             model: snapshot.data!,
             type: TweetType.ParentTweet,
             trailing: trailing,
-            scaffoldKey: GlobalKey<ScaffoldState>(),
+            scaffoldKey: GlobalKey<ScaffoldMessengerState>(),
           );
         }
         if ((snapshot.connectionState == ConnectionState.done ||

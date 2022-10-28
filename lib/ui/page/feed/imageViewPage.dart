@@ -82,7 +82,7 @@ class _ImageViewPgeState extends State<ImageViewPge> {
                       model: state.tweetDetailModel!.last,
                       iconColor: Theme.of(context).colorScheme.onPrimary,
                       iconEnableColor: Theme.of(context).colorScheme.onPrimary,
-                      scaffoldKey: GlobalKey<ScaffoldState>(),
+                      scaffoldKey: GlobalKey<ScaffoldMessengerState>(),
                     ),
                     Container(
                       color: Colors.brown.shade700.withAlpha(200),

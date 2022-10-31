@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -15,8 +15,25 @@ import 'package:flutter_twitter_clone/model/user.dart';
 import 'package:flutter_twitter_clone/ui/page/common/locator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:path/path.dart' as path;
-
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_twitter_clone/constants.dart';
 import 'appState.dart';
+
+extension ShowSnackBar on BuildContext {
+  void showSnackBar({
+    required String message,
+    Color backgroundColor = Colors.white,
+  }) {
+    ScaffoldMessenger.of(this).showSnackBar(SnackBar(
+      content: Text(message),
+      backgroundColor: backgroundColor,
+    ));
+  }
+
+  void showErrorSnackBar({required String message}) {
+    showSnackBar(message: message, backgroundColor: Colors.red);
+  }
+}
 
 class AuthState extends AppState {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
@@ -24,7 +41,7 @@ class AuthState extends AppState {
   User? user;
   late String userId;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  // final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   db.Query? _profileQuery;
@@ -48,7 +65,7 @@ class AuthState extends AppState {
       Utility.logEvent('google_logout', parameter: {});
       isSignInWithGoogle = false;
     }
-    _firebaseAuth.signOut();
+    await supabase.auth.signOut();
     notifyListeners();
     await getIt<SharedPreferenceHelper>().clearPreferenceValues();
   }
@@ -63,7 +80,7 @@ class AuthState extends AppState {
   void databaseInit() {
     try {
       if (_profileQuery == null) {
-        _profileQuery = kDatabase.child("profile").child(user!.uid);
+        _profileQuery = kDatabase.child("profile").child(user!.id);
         _profileQuery!.onValue.listen(_onProfileChanged);
         _profileQuery!.onChildChanged.listen(_onProfileUpdated);
       }
@@ -77,11 +94,11 @@ class AuthState extends AppState {
       {required GlobalKey<ScaffoldMessengerState> scaffoldKey}) async {
     try {
       isBusy = true;
-      var result = await _firebaseAuth.signInWithEmailAndPassword(
-          email: email, password: password);
+      var result = await supabase.auth
+          .signInWithPassword(email: email, password: password);
       user = result.user;
-      userId = user!.uid;
-      return user!.uid;
+      userId = user!.id;
+      return user!.id;
     } on FirebaseException catch (error) {
       if (error.code == 'firebase_auth/user-not-found') {
         Utility.customSnackBar(scaffoldKey, 'User not found');
@@ -108,22 +125,19 @@ class AuthState extends AppState {
   /// If user is old then it just `authenticate` user and return firebase user data
   Future<User?> handleGoogleSignIn() async {
     try {
-      /// Record log in firebase kAnalytics about Google login
-      kAnalytics.logLogin(loginMethod: 'google_login');
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser == null) {
+      // TODO - get supabase google signin to work.  This is in pencil.
+      await supabase.auth
+          .signInWithOAuth(Provider.google, scopes: 'repo gist notifications');
+
+      final Session? session = supabase.auth.currentSession;
+      final String? oAuthToken = session?.providerToken;
+
+      if (session == null) {
         throw Exception('Google login cancelled by user');
       }
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-      user = (await _firebaseAuth.signInWithCredential(credential)).user;
       authStatus = AuthStatus.LOGGED_IN;
-      userId = user!.uid;
+      userId = user!.id;
       isSignInWithGoogle = true;
       createUserFromGoogleSignIn(user!);
       notifyListeners();
@@ -148,7 +162,7 @@ class AuthState extends AppState {
 
   /// Create user profile from google login
   void createUserFromGoogleSignIn(User user) {
-    var diff = DateTime.now().difference(user.metadata.creationTime!);
+    var diff = DateTime.now().difference(DateTime.parse(user.createdAt));
     // Check if user is new or old
     // If user is new then add new user to firebase realtime kDatabase
     if (diff < const Duration(seconds: 15)) {
@@ -157,43 +171,44 @@ class AuthState extends AppState {
         dob: DateTime(1950, DateTime.now().month, DateTime.now().day + 3)
             .toString(),
         location: 'Somewhere in universe',
-        profilePic: user.photoURL!,
-        displayName: user.displayName!,
+        // profilePic: user.photoURL!,
+        // displayName: user.displayName!,
         email: user.email!,
-        key: user.uid,
-        userId: user.uid,
-        contact: user.phoneNumber!,
-        isVerified: user.emailVerified,
+        key: user.id,
+        userId: user.id,
+        contact: user.phone!,
+        isVerified: user.emailConfirmedAt != null,
       );
       createUser(model, newUser: true);
     } else {
-      cprint('Last login at: ${user.metadata.lastSignInTime}');
+      cprint('Last login at: ${user.lastSignInAt}');
     }
   }
 
-  /// Create new user's profile in db
+  /// Create new user profile in supabase
   Future<String?> signUp(UserModel userModel,
       {required GlobalKey<ScaffoldMessengerState> scaffoldKey,
       required String password}) async {
     try {
       isBusy = true;
-      var result = await _firebaseAuth.createUserWithEmailAndPassword(
+      var result = await supabase.auth.signUp(
         email: userModel.email!,
         password: password,
       );
       user = result.user;
       authStatus = AuthStatus.LOGGED_IN;
       kAnalytics.logSignUp(signUpMethod: 'register');
-      result.user!.updateDisplayName(
-        userModel.displayName,
-      );
-      result.user!.updatePhotoURL(userModel.profilePic);
+      // TODO - revive these
+      // result.user!.updateDisplayName(
+      //   userModel.displayName,
+      // );
+      // result.user!.updatePhotoURL(userModel.profilePic);
 
       _userModel = userModel;
-      _userModel!.key = user!.uid;
-      _userModel!.userId = user!.uid;
+      _userModel!.key = user!.id;
+      _userModel!.userId = user!.id;
       createUser(_userModel!, newUser: true);
-      return user!.uid;
+      return user!.id;
     } catch (error) {
       isBusy = false;
       cprint(error, errorIn: 'signUp');
@@ -225,12 +240,12 @@ class AuthState extends AppState {
   Future<User?> getCurrentUser() async {
     try {
       isBusy = true;
-      Utility.logEvent('get_currentUSer', parameter: {});
-      user = _firebaseAuth.currentUser;
+      Utility.logEvent('get_currentUser', parameter: {});
+      user = supabase.auth.currentUser;
       if (user != null) {
         await getProfileUser();
         authStatus = AuthStatus.LOGGED_IN;
-        userId = user!.uid;
+        userId = user!.id;
       } else {
         authStatus = AuthStatus.NOT_LOGGED_IN;
       }
@@ -246,9 +261,10 @@ class AuthState extends AppState {
 
   /// Reload user to get refresh user data
   void reloadUser() async {
-    await user!.reload();
-    user = _firebaseAuth.currentUser;
-    if (user!.emailVerified) {
+    // TODO - this is firebase.  Get supabase equipvalent
+    // await user!.reload();
+    user = supabase.auth.currentUser;
+    if (user!.emailConfirmedAt != null) {
       userModel!.isVerified = true;
       // If user verified his email
       // Update user in firebase realtime kDatabase
@@ -262,36 +278,44 @@ class AuthState extends AppState {
   /// Send email verification link to email2
   Future<void> sendEmailVerification(
       GlobalKey<ScaffoldMessengerState> scaffoldKey) async {
-    User user = _firebaseAuth.currentUser!;
-    user.sendEmailVerification().then((_) {
-      Utility.logEvent('email_verification_sent',
-          parameter: {userModel!.displayName!: user.email});
-      Utility.customSnackBar(
-        scaffoldKey,
-        'An email verification link is send to your email.',
-      );
-    }).catchError((error) {
-      cprint(error.message, errorIn: 'sendEmailVerification');
-      Utility.logEvent('email_verification_block',
-          parameter: {userModel!.displayName!: user.email});
-      Utility.customSnackBar(
-        scaffoldKey,
-        error.message,
-      );
-    });
+    // TODO - activate this code.  Need to figure how to do in supabase
+    // User user = supabase.auth.currentUser!;
+    // user.sendEmailVerification().then((_) {
+    //   Utility.logEvent('email_verification_sent',
+    //       parameter: {userModel!.displayName!: user.email});
+    //   Utility.customSnackBar(
+    //     scaffoldKey,
+    //     'An email verification link is send to your email.',
+    //   );
+    // }).catchError((error) {
+    //   cprint(error.message, errorIn: 'sendEmailVerification');
+    //   Utility.logEvent('email_verification_block',
+    //       parameter: {userModel!.displayName!: user.email});
+    //   Utility.customSnackBar(
+    //     scaffoldKey,
+    //     error.message,
+    //   );
+    // });
   }
 
   /// Check if user's email is verified
   Future<bool> emailVerified() async {
-    User user = _firebaseAuth.currentUser!;
-    return user.emailVerified;
+    User user = supabase.auth.currentUser!;
+    return user.emailConfirmedAt == null;
   }
 
   /// Send password reset link to email
   Future<void> forgetPassword(String email,
       {required GlobalKey<ScaffoldMessengerState> scaffoldKey}) async {
     try {
-      await _firebaseAuth.sendPasswordResetEmail(email: email).then((value) {
+      await supabase.auth
+          .resetPasswordForEmail(
+        email,
+        redirectTo: 'io.supabase.flutter://reset-callback/',
+        // TODO - Get this working to handle web case
+        // redirectTo: kIsWeb ? null : 'io.supabase.flutter://reset-callback/',
+      )
+          .then((value) {
         Utility.customSnackBar(scaffoldKey,
             'A reset password link is sent yo your mail.You can reset your password from there');
         Utility.logEvent('forgot+password', parameter: {});
@@ -317,9 +341,9 @@ class AuthState extends AppState {
           userModel!.profilePic = await _uploadFileToStorage(image,
               'user/profile/${userModel.userName}/${path.basename(image.path)}');
           // print(fileURL);
-          var name = userModel.displayName ?? user!.displayName;
-          _firebaseAuth.currentUser!.updateDisplayName(name);
-          _firebaseAuth.currentUser!.updatePhotoURL(userModel.profilePic);
+          // var name = userModel.displayName ?? user!.displayName;
+          // _firebaseAuth.currentUser!.updateDisplayName(name);
+          // _firebaseAuth.currentUser!.updatePhotoURL(userModel.profilePic);
           Utility.logEvent('user_profile_image');
         }
 
@@ -372,7 +396,7 @@ class AuthState extends AppState {
   /// If `userProfileId` is null then logged in user's profile will fetched
   FutureOr<void> getProfileUser({String? userProfileId}) {
     try {
-      userProfileId = userProfileId ?? user!.uid;
+      userProfileId = userProfileId ?? user!.id;
       kDatabase
           .child("profile")
           .child(userProfileId)
@@ -382,10 +406,10 @@ class AuthState extends AppState {
         if (snapshot.value != null) {
           var map = snapshot.value as Map<dynamic, dynamic>?;
           if (map != null) {
-            if (userProfileId == user!.uid) {
+            if (userProfileId == user!.id) {
               _userModel = UserModel.fromJson(map);
-              _userModel!.isVerified = user!.emailVerified;
-              if (!user!.emailVerified) {
+              _userModel!.isVerified = user!.emailConfirmedAt != null;
+              if (user!.emailConfirmedAt == null) {
                 // Check if logged in user verified his email address or not
                 // reloadUser();
               }

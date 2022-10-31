@@ -7,11 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_twitter_clone/helper/enum.dart';
 import 'package:flutter_twitter_clone/helper/utility.dart';
 import 'package:flutter_twitter_clone/model/user.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_twitter_clone/constants.dart';
 
 class ProfileState extends ChangeNotifier {
   ProfileState(this.profileId) {
     databaseInit();
-    userId = FirebaseAuth.instance.currentUser!.uid;
+    userId = supabase.auth.currentUser!.id;
     _getloggedInUserProfile(userId);
     _getProfileUser(profileId);
   }

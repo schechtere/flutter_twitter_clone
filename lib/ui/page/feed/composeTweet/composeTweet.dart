@@ -326,11 +326,12 @@ class _ComposeRetweet
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child:
-                    CircularImage(path: authState.user?.photoURL, height: 40),
-              ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child:
+                      // TODO - get image inserted
+                      // CircularImage(path: authState.user?.photoURL, height: 40),
+                      null),
               Expanded(
                 child: _TextField(
                   isTweet: false,
@@ -497,7 +498,8 @@ class _ComposeTweet
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              CircularImage(path: authState.user?.photoURL, height: 40),
+              // TODO - get a damn photo in here
+              // CircularImage(path: authState.user?.photoURL, height: 40),
               const SizedBox(
                 width: 10,
               ),

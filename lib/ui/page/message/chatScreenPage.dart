@@ -232,7 +232,9 @@ class _ChatScreenPageState extends State<ChatScreenPage> {
         receiverId: state.chatUser!.userId!,
         seen: false,
         timeStamp: DateTime.now().toUtc().millisecondsSinceEpoch.toString(),
-        senderName: authState.user!.displayName!);
+        // TODO - add displayName
+        senderName: 'Ziggy');
+    // senderName: authState.user!.displayName!);
     if (messageController.text.isEmpty) {
       return;
     }

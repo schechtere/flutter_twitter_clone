@@ -53,6 +53,7 @@ dependencies:
   translator: ^0.1.7
   flutter_chat_types: ^3.1.4
   link_preview_generator: ^1.2.0
+  supabase_flutter: ^1.0.0
 
 dev_dependencies:
   test: ^1.17.10

@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
     /// `model.data.senderId` is a user id who sends you a message
     /// `model.data.receiverId` is a your user id.
     if (model.type == NotificationType.Message.toString() &&
-        model.receiverId == authState.user!.uid) {
+        model.receiverId == authState.user!.id) {
       /// Get sender profile detail from firebase
       state.getUserDetail(model.senderId).then((user) {
         final chatState = Provider.of<ChatState>(context, listen: false);
@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage> {
     /// You can check that tweet on his profile timeline
     /// `model.data.senderId` is user id who tagged you in a tweet
     else if (model.type == NotificationType.Mention.toString() &&
-        model.receiverId == authState.user!.uid) {
+        model.receiverId == authState.user!.id) {
       var feedState = Provider.of<FeedState>(context, listen: false);
       feedState.getPostDetailFromDatabase(model.tweetId);
       Navigator.push(context, FeedPostDetail.getRoute(model.tweetId));

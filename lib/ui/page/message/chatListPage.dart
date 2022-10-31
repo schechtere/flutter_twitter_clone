@@ -32,7 +32,7 @@ class _ChatListPageState extends State<ChatListPage> {
     chatState.setIsChatScreenOpen = true;
 
     // chatState.databaseInit(state.profileUserModel.userId,state.userId);
-    chatState.getUserChatList(state.user!.uid);
+    chatState.getUserChatList(state.user!.id);
 
     super.initState();
   }
